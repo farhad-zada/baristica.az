@@ -1,0 +1,40 @@
+# spring:
+#   config:
+#     import: optional:file:.env[.properties]
+#   datasource:
+#     url: jdbc:postgresql://localhost:${ORDERS_DB_PORT}/${ORDERS_DB_NAME}
+#     username: ${ORDERS_DB_USERNAME}
+#     password: ${ORDERS_DB_PASSWORD}
+#     driver-class-name: org.postgresql.Driver
+#   jpa:
+#     hibernate:
+#       ddl-auto: update
+#     show-sql: false
+#   threads:
+#     virtual:
+#       enabled: true
+#   cloud:
+#     stream:
+#       kafka:
+#         binder:
+#           brokers:
+#           - localhost:9092
+#       # function:
+#         # definition: orderCreated
+#       bindings:
+#         orders-out-0:
+#           destination: orders
+#           group: orderProducers
+#         paymentProcessor-in-0:
+#           destination: payments
+#           group: order-payments
+#   kafka:
+#     producer:
+#       key-serializer:
+#         org.apache.kafka.common.serialization.IntegerSerializer
+#       value-serializer:
+#         org.apache.kafka.common.serialization.ByteArraySerializer
+      
+
+# server:
+#   port: ${ORDERS_PORT:8081}
