@@ -10,7 +10,7 @@ COPY ./notification-service/pom.xml notification-service/pom.xml
 
 RUN mvn dependency:go-offline -B 
 
-COPY ./order-service/src ./order-service/src
+COPY ./common-dtos/src ./common-dtos/src
 COPY ./payment-service/src ./payment-service/src
 
 RUN mvn package -pl payment-service -am -DskipTests
