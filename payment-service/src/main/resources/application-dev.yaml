@@ -3,22 +3,26 @@ spring:
     import: optional:file:.env[.properties]
   application:
     name: "payment-service"
+  # database
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASS}
+    url: jdbc:postgresql://localhost:5433/payment-service
+    username: root
+    password: 123456789
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: none
-  
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/
+  # cloud streams
   cloud:
     function:
       definition: orderConsumer;paymentProducer
     stream:
       kafka:
         binder:
-          brokers: broker:9092
+          brokers: localhost:9092
       bindings:
         orderConsumer-in-0: 
           destination: orders
@@ -28,7 +32,7 @@ spring:
           group: paymentProducer
         
   kafka:
-    bootstrap-servers: broker:9092
+    bootstrap-servers: localhost:9092
     consumer:
       auto-offset-reset:  earliest
       enable-auto-commit: true
@@ -41,7 +45,8 @@ spring:
         org.apache.kafka.common.serialization.IntegerSerializer
       value-serializer:
         org.apache.kafka.common.serialization.ByteArraySerializer
-    
+     
+
 
 server:
-  port: ${PORT}
+  port: 7070
