@@ -9,6 +9,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.shop.common.event.PaymentEvent;
+import com.shop.common.event.PaymentStatus;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -22,15 +23,35 @@ public class PaymentEventPublisher {
         this.streamBridge = streamBridge;
     }
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void publish(PaymentEvent event) {
-        Message<PaymentEvent> message = MessageBuilder
-                .withPayload(event)
-                .setHeader(KafkaHeaders.KEY, event.getOrderId())
-                .setHeader("kafka_messageKey", event.getOrderId())
-                .build();
-        streamBridge.send("paymentProducer-out-0", message);
-        log.info("Published PaymentEvent AFTER COMMIT: {}", event);
+        try {
+
+            Message<PaymentEvent> message = MessageBuilder
+                    .withPayload(event)
+                    .setHeader(KafkaHeaders.KEY, event.getOrderId())
+                    .setHeader("kafka_messageKey", event.getOrderId())
+                    .build();
+            boolean sent = streamBridge.send("paymentProducer-out-0", message);
+            if (sent) {
+                log.info("Published {}", event);
+            } else {
+                log.warn("Failed to publish {}", event);
+            }
+        } catch (Exception e) {
+            log.error("Exception while publishing event: {}", event, e);
+        }
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onCommitEvent(PaymentEvent event) {
+        event.setStatus(PaymentStatus.SUCCESSFUL);
+        this.publish(event);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
+    public void onRollbackEvent(PaymentEvent event) {
+        event.setStatus(PaymentStatus.FAILED);
+        this.publish(event);
     }
 
 }

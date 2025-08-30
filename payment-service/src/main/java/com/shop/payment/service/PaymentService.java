@@ -3,12 +3,13 @@ package com.shop.payment.service;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
-import com.shop.common.entity.PaymentStatus;
+import com.shop.common.event.OrderEvent;
 import com.shop.common.event.PaymentEvent;
-import com.shop.payment.entity.Order;
 import com.shop.payment.exception.InsufficientBalanceException;
 
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,18 +24,18 @@ public class PaymentService {
     }
 
     @Transactional
-    public void paymentProcessor(Order order) {
-        PaymentEvent event = new PaymentEvent();
-        event.setOrderId(order.getId());
+    public void paymentProcessor(OrderEvent orderEvent) {
+        PaymentEvent paymentEvent = new PaymentEvent();
+        paymentEvent.setOrderId(orderEvent.getOrderId());
         try {
-            this.userBalanceService.deductPurchase(order.getUserId(), order.getCost());
-            event.setStatus(PaymentStatus.SUCCESSFUL);
+            this.userBalanceService.deductPurchase(orderEvent.getUserId(), orderEvent.getCost());
+            paymentEvent.setMessage("payment acquired");
         } catch (InsufficientBalanceException ex) {
-            event.setStatus(PaymentStatus.FAILED);
-            event.setMessage("insufficient balance");
+            paymentEvent.setMessage("insufficient balance");
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         }
-        this.eventPublisher.publishEvent(event);
+        this.eventPublisher.publishEvent(paymentEvent);
         log.info("Payment {} for orderId={} (userId={})  - event queued for publishing after commit",
-                event.getStatus(), order.getId(), order.getUserId());
+                paymentEvent.getStatus(), orderEvent.getOrderId(), orderEvent.getUserId());
     }
 }

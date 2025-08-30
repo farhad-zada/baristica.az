@@ -1,15 +1,15 @@
 package com.shop.payment.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.shop.payment.dto.UserBalanceRequestDto;
 import com.shop.payment.dto.UserBalanceResponseDto;
 import com.shop.payment.entity.UserBalance;
 import com.shop.payment.exception.InsufficientBalanceException;
 import com.shop.payment.exception.UserBalanceNotFoundException;
 import com.shop.payment.repository.UserBalanceRepository;
-
-import jakarta.transaction.Transactional;
-import jakarta.transaction.Transactional.TxType;
 
 @Service
 public class UserBalanceService {
@@ -25,7 +25,7 @@ public class UserBalanceService {
         return new UserBalanceResponseDto(balance.getUserId(), balance.getBalance());
     }
 
-    @Transactional(value = TxType.REQUIRED)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void deductPurchase(Integer userId, Integer amount) {
         UserBalance ub = this.repository.findById(userId).orElseThrow(() -> new RuntimeException());
         Integer newBalance = ub.getBalance() - amount;
@@ -33,5 +33,11 @@ public class UserBalanceService {
             throw new InsufficientBalanceException(userId);
         }
         ub.setBalance(newBalance);
+    }
+
+    @Transactional
+    public UserBalanceResponseDto createUserBalance(UserBalanceRequestDto requestDto) {
+        UserBalance saved = this.repository.save(new UserBalance(requestDto.getUserId(), requestDto.getBalance()));
+        return new UserBalanceResponseDto(saved.getUserId(), saved.getBalance());
     }
 }
