@@ -16,6 +16,7 @@ import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import com.shop.common.event.OrderStatus;;
 
 @AllArgsConstructor
 @NoArgsConstructor

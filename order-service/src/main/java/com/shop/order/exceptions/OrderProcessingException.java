@@ -1,4 +1,4 @@
-package com.shop.exceptions;
+package com.shop.order.exceptions;
 
 public class OrderProcessingException extends RuntimeException {
     public OrderProcessingException(String message) {

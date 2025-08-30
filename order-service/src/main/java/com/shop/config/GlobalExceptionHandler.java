@@ -10,8 +10,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.shop.exceptions.OrderNotFoundException;
-import com.shop.exceptions.OrderProcessingException;
+import com.shop.order.exceptions.OrderNotFoundException;
+import com.shop.order.exceptions.OrderProcessingException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

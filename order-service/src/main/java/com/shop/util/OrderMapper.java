@@ -1,8 +1,13 @@
 package com.shop.util;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+import com.shop.common.event.OrderEvent;
 import com.shop.dto.OrderRequestDto;
 import com.shop.dto.OrderResponseDto;
 import com.shop.entity.Order;
@@ -17,4 +22,13 @@ public interface OrderMapper {
 
     OrderResponseDto toDto(Order order);
 
+    @Mapping(source = "id", target = "orderId")
+    @Mapping(ignore = true, target = "message")
+    OrderEvent toEvent(Order order);
+
+    default Long map(LocalDateTime localDateTime) {
+        return localDateTime != null ? localDateTime
+                .toInstant(ZoneOffset.UTC)
+                .toEpochMilli() : Instant.now().toEpochMilli();
+    }
 }

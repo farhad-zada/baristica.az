@@ -1,40 +1,57 @@
-# spring:
-#   config:
-#     import: optional:file:.env[.properties]
-#   datasource:
-#     url: jdbc:postgresql://localhost:${ORDERS_DB_PORT}/${ORDERS_DB_NAME}
-#     username: ${ORDERS_DB_USERNAME}
-#     password: ${ORDERS_DB_PASSWORD}
-#     driver-class-name: org.postgresql.Driver
-#   jpa:
-#     hibernate:
-#       ddl-auto: update
-#     show-sql: false
-#   threads:
-#     virtual:
-#       enabled: true
-#   cloud:
-#     stream:
-#       kafka:
-#         binder:
-#           brokers:
-#           - localhost:9092
-#       # function:
-#         # definition: orderCreated
-#       bindings:
-#         orders-out-0:
-#           destination: orders
-#           group: orderProducers
-#         paymentProcessor-in-0:
-#           destination: payments
-#           group: order-payments
-#   kafka:
-#     producer:
-#       key-serializer:
-#         org.apache.kafka.common.serialization.IntegerSerializer
-#       value-serializer:
-#         org.apache.kafka.common.serialization.ByteArraySerializer
-      
-
-# server:
-#   port: ${ORDERS_PORT:8081}
+spring:
+  config:
+    import: optional:file:./.env[.properties]
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    url: jdbc:postgresql://localhost:${ORDERS_DB_PORT}/${ORDERS_DB_NAME}
+    username: ${ORDERS_DB_USERNAME}
+    password: ${ORDERS_DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+  threads:
+    virtual:
+      enabled: true
+  cloud:
+    function:
+      definition: paymentConsumer
+    stream:
+      kafka:
+        binder:
+          brokers:
+          - ${BOOTSTRAP_SERVER}
+      bindings:
+        orders-out-0:
+          destination: orders
+          group: orderProducers
+        paymentConsumer-in-0:
+          destination: payments
+          group: order-service-payment-consumer
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset:  earliest
+      enable-auto-commit: true
+      key-deserializer:
+        org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer:
+        org.apache.kafka.common.serialization.ByteArrayDeserializer
+    producer:
+      key-serializer:
+        org.apache.kafka.common.serialization.IntegerSerializer
+      value-serializer:
+        org.apache.kafka.common.serialization.ByteArraySerializer
+logging:
+  level:
+    org: 
+      springframework: 
+          core:
+            env: DEBUG
+          boot:
+            context:
+              config: DEBUG
+server:
+  port: ${ORDERS_PORT:8081}

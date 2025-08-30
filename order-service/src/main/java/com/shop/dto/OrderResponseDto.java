@@ -2,7 +2,7 @@ package com.shop.dto;
 
 import java.time.LocalDateTime;
 
-import com.shop.entity.OrderStatus;
+import com.shop.common.event.OrderStatus;
 import com.shop.entity.interfaces.OrderInterface;
 
 import jakarta.validation.constraints.NotNull;

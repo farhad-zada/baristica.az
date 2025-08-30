@@ -1,6 +1,9 @@
 spring:
   config:
     import: optional:file:.env[.properties]
+  profiles:
+    active: 
+     - ${SPRING_PROFILES_ACTIVE:dev}
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
@@ -14,9 +17,9 @@ spring:
     virtual:
       enabled: true
   cloud:
+    function:
+      definition: paymentConsumer
     stream:
-      # function:
-      #   definition: orderCreated
       kafka:
         binder:
           brokers:
@@ -25,10 +28,18 @@ spring:
         orders-out-0:
           destination: orders
           group: orderProducers
-        paymentProcessed-in-0:
+        paymentConsumer-in-0:
           destination: payments
-          group: order-payments
+          group: order-service-payment-consumer
   kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-offset-reset:  earliest
+      enable-auto-commit: true
+      key-deserializer:
+        org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer:
+        org.apache.kafka.common.serialization.ByteArrayDeserializer
     producer:
       key-serializer:
         org.apache.kafka.common.serialization.IntegerSerializer

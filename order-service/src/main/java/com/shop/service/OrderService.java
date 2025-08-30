@@ -1,32 +1,37 @@
 package com.shop.service;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.shop.common.event.OrderEvent;
+import com.shop.common.event.PaymentEvent;
+import com.shop.common.event.PaymentStatus;
 import com.shop.dto.OrderRequestDto;
 import com.shop.dto.OrderResponseDto;
 import com.shop.entity.Order;
-import com.shop.entity.OrderStatus;
-import com.shop.exceptions.OrderProcessingException;
+import com.shop.order.exceptions.OrderNotFoundException;
+import com.shop.common.event.OrderStatus;
 import com.shop.repository.OrderRepository;
 import com.shop.util.OrderMapper;
 
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
 
 @Service
 public class OrderService {
 
     OrderRepository repository;
     OrderMapper orderMapper;
-    OrderEventService eventService;
+    ApplicationEventPublisher eventPublisher;
 
-    public OrderService(OrderRepository repository, OrderMapper orderMapper, OrderEventService eventService) {
+    public OrderService(OrderRepository repository, OrderMapper orderMapper, ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.orderMapper = orderMapper;
-        this.eventService = eventService;
+        this.eventPublisher = eventPublisher;
     }
 
     public List<OrderResponseDto> getOrders() {
@@ -47,16 +52,34 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDto createOrder(OrderRequestDto dto) {
-        try {
-            Order entity = orderMapper.toEntity(dto);
-            entity.setStatus(OrderStatus.PENDING);
-            entity.setCreatedAt(LocalDateTime.now());
-            Order savedOrder = this.repository.save(entity);
-            eventService.publishOrder(savedOrder);
-            return orderMapper.toDto(savedOrder);
-        } catch (Exception ex) {
-            throw new OrderProcessingException("Order could not be saved: " + ex.getMessage());
-        }
+        Order entity = orderMapper.toEntity(dto);
+        entity.setStatus(OrderStatus.PENDING);
+        entity.setCreatedAt(LocalDateTime.now());
+        Order savedOrder = this.repository.save(entity);
+        eventPublisher.publishEvent(savedOrder);
+        return orderMapper.toDto(savedOrder);
 
+    }
+
+    @Transactional
+    public void paymentProcessed(PaymentEvent event) {
+        Order order = this.repository
+                .findById(event.getOrderId())
+                .orElseThrow(() -> new OrderNotFoundException(event.getOrderId()));
+        if (PaymentStatus.SUCCESSFUL.equals(event.getStatus())) {
+            order.setStatus(OrderStatus.COMPLETED);
+        } else if (PaymentStatus.FAILED.equals(event.getStatus())) {
+            order.setStatus(OrderStatus.CANCELLED);
+        }
+        OrderEvent orderEvent = new OrderEvent(
+                event.getOrderId(),
+                order.getUserId(),
+                order.getProductId(),
+                order.getCost(),
+                order.getStatus(),
+                Instant.now().toEpochMilli(),
+                "");
+
+        this.eventPublisher.publishEvent(orderEvent);
     }
 }

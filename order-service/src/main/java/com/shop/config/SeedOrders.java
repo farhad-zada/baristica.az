@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.shop.entity.Order;
-import com.shop.entity.OrderStatus;
+import com.shop.common.event.OrderStatus;
 import com.shop.repository.OrderRepository;
 
 import jakarta.annotation.PostConstruct;

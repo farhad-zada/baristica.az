@@ -3,7 +3,7 @@ package com.shop.entity.interfaces;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-import com.shop.entity.OrderStatus;
+import com.shop.common.event.OrderStatus;
 
 public interface OrderInterface extends Serializable {
     Integer getId();
