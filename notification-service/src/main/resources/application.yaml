@@ -2,8 +2,5 @@ spring:
   threads:
     virtual:
       enabled: true
-  profiles:
-    active:
-    - ${SPRING_PROFILES_ACTIVE:NOTIFICATIONS_SPRING_PROFILES_ACTIVE}
 server:
-  port: ${PORT:8083}
+  port: ${PORT:8093}
