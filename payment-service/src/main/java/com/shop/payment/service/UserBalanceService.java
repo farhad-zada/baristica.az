@@ -27,7 +27,7 @@ public class UserBalanceService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void deductPurchase(Integer userId, Integer amount) {
-        UserBalance ub = this.repository.findById(userId).orElseThrow(() -> new RuntimeException());
+        UserBalance ub = this.repository.findById(userId).orElseThrow(() -> new UserBalanceNotFoundException(userId));
         Integer newBalance = ub.getBalance() - amount;
         if (newBalance < 0) {
             throw new InsufficientBalanceException(userId);
