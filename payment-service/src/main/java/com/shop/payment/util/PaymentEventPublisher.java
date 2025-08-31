@@ -39,19 +39,26 @@ public class PaymentEventPublisher {
             }
         } catch (Exception e) {
             log.error("Exception while publishing event: {}", event, e);
+            throw e;
         }
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onCommitEvent(PaymentEvent event) {
-        event.setStatus(PaymentStatus.SUCCESSFUL);
-        this.publish(event);
+        this.publish(
+                new PaymentEvent(
+                        event.getOrderId(),
+                        PaymentStatus.SUCCESSFUL,
+                        event.getMessage()));
     }
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
     public void onRollbackEvent(PaymentEvent event) {
-        event.setStatus(PaymentStatus.FAILED);
-        this.publish(event);
+        this.publish(
+                new PaymentEvent(
+                        event.getOrderId(),
+                        PaymentStatus.FAILED,
+                        event.getMessage()));
     }
 
 }
