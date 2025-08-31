@@ -29,7 +29,6 @@ public class PaymentEventPublisher {
             Message<PaymentEvent> message = MessageBuilder
                     .withPayload(event)
                     .setHeader(KafkaHeaders.KEY, event.getOrderId())
-                    .setHeader("kafka_messageKey", event.getOrderId())
                     .build();
             boolean sent = streamBridge.send("paymentProducer-out-0", message);
             if (sent) {
