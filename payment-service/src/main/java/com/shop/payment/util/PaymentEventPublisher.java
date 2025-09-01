@@ -37,7 +37,7 @@ public class PaymentEventPublisher {
                 log.warn("Failed to publish {}", event);
             }
         } catch (Exception e) {
-            log.error("Exception while publishing event: {}", event, e);
+            log.error("Exception while publishing {} {}", event, e);
             throw e;
         }
     }
