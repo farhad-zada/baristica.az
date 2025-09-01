@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentEvent implements PaymentInterface, Serializable {
-    public Integer orderId;
-    public PaymentStatus status;
-    public String message;
+    Integer orderId;
+    PaymentStatus status;
+    String message;
 }
