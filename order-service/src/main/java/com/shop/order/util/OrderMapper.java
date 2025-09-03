@@ -1,4 +1,4 @@
-package com.shop.util;
+package com.shop.order.util;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -8,9 +8,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import com.shop.common.event.OrderEvent;
-import com.shop.dto.OrderRequestDto;
-import com.shop.dto.OrderResponseDto;
-import com.shop.entity.Order;
+import com.shop.order.dto.OrderRequestDto;
+import com.shop.order.dto.OrderResponseDto;
+import com.shop.order.model.Order;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {

@@ -1,4 +1,4 @@
-package com.shop.service;
+package com.shop.order.service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,13 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.shop.common.event.OrderEvent;
 import com.shop.common.event.PaymentEvent;
 import com.shop.common.event.PaymentStatus;
-import com.shop.dto.OrderRequestDto;
-import com.shop.dto.OrderResponseDto;
-import com.shop.entity.Order;
-import com.shop.order.exceptions.OrderNotFoundException;
+import com.shop.order.dto.OrderRequestDto;
+import com.shop.order.dto.OrderResponseDto;
+import com.shop.order.exception.OrderNotFoundException;
+import com.shop.order.model.Order;
+import com.shop.order.repository.OrderRepository;
+import com.shop.order.util.OrderMapper;
 import com.shop.common.event.OrderStatus;
-import com.shop.repository.OrderRepository;
-import com.shop.util.OrderMapper;
 
 import jakarta.persistence.EntityNotFoundException;
 

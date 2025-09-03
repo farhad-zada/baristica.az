@@ -1,8 +1,8 @@
-package com.shop.entity;
+package com.shop.order.model;
 
 import java.time.LocalDateTime;
 
-import com.shop.entity.interfaces.OrderInterface;
+import com.shop.common.entity.interfaces.OrderInterface;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

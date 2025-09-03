@@ -1,9 +1,9 @@
-package com.shop.dto;
+package com.shop.order.dto;
 
 import java.time.LocalDateTime;
 
 import com.shop.common.event.OrderStatus;
-import com.shop.entity.interfaces.OrderInterface;
+import com.shop.common.entity.interfaces.OrderInterface;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

@@ -10,8 +10,17 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     show-sql: false
+  flyway:
+    url: jdbc:postgresql://localhost:${ORDERS_DB_PORT}/${ORDERS_DB_NAME}
+    user: ${ORDERS_DB_USERNAME}
+    password: ${ORDERS_DB_PASSWORD}
+    enabled: true
+    baseline-on-migrate: false
+    locations:
+      - classpath:db/migration
+    
   threads:
     virtual:
       enabled: true
@@ -54,4 +63,4 @@ logging:
             context:
               config: DEBUG
 server:
-  port: ${ORDERS_PORT:8081}
+  port: ${ORDERS_DEV_PORT:8081}

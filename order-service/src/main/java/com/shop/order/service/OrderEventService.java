@@ -1,4 +1,4 @@
-package com.shop.service;
+package com.shop.order.service;
 
 import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -9,8 +9,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.shop.common.event.OrderEvent;
 import com.shop.common.event.OrderStatus;
-import com.shop.entity.Order;
-import com.shop.util.OrderMapper;
+import com.shop.order.model.Order;
+import com.shop.order.util.OrderMapper;
 
 import lombok.extern.slf4j.Slf4j;
 

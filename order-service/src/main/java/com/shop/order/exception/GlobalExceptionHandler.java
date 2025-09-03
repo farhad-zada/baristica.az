@@ -1,4 +1,4 @@
-package com.shop.config;
+package com.shop.order.exception;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,9 +9,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import com.shop.order.exceptions.OrderNotFoundException;
-import com.shop.order.exceptions.OrderProcessingException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

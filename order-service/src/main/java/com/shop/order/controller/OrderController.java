@@ -1,11 +1,11 @@
-package com.shop.controller;
+package com.shop.order.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shop.dto.OrderRequestDto;
-import com.shop.dto.OrderResponseDto;
-import com.shop.service.OrderService;
+import com.shop.order.dto.OrderRequestDto;
+import com.shop.order.dto.OrderResponseDto;
+import com.shop.order.service.OrderService;
 
 import io.micrometer.common.lang.NonNull;
 import jakarta.validation.Valid;
