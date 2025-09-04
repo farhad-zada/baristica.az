@@ -1,0 +1,19 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: farhad.szd@gmail.com
+    password: wiqq efxm qbgx wfpm
+    properties:
+      mail:
+        smtp: 
+          auth: true
+          starttls: 
+            enable: true
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers:
+          - broker:9092
+    

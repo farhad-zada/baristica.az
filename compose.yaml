@@ -71,16 +71,22 @@ services:
     build:
       context: .
       dockerfile: docker/notification-service/Dockerfile
+    container_name: notification-service
     environment:
       - SPRING_PROFILES_ACTIVE=${NOTIFICATIONS_SPRING_PROFILES_ACTIVE}
       - JAVA_OPTS=${JAVA_OPTS}
+      - MAIL_HOST=${MAIL_HOST}
+      - MAIL_PORT=${MAIL_PORT}
+      - MAIL_USER=${MAIL_USER}
+      - MAIL_PASS=${MAIL_PASS}
+      - BOOTSTRAP_SERVER=broker:9092
       - PORT=8080
     ports:
-      - ${NOTIFICATIONS_PORT}:8080
+      - 8080
     deploy:
       resources:
         limits:
-          memory: 512M
+          memory: 768M
         reservations:
           memory: 256M
     healthcheck:

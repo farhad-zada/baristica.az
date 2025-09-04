@@ -1,6 +1,45 @@
 spring:
+  profiles:
+    active:
+    - ${SPRING_PROFILES_ACTIVE:dev}
   threads:
     virtual:
       enabled: true
+  mail:
+    host: ${MAIL_HOST}
+    port: ${MAIL_PORT}
+    username: ${MAIL_USER}
+    password: ${MAIL_PASS}
+    properties:
+      mail:
+        smtp: 
+          auth: true
+          starttls: 
+            enable: true
+  cloud:
+    function:
+      definition: orderConsumer;paymentConsumer
+    stream:
+      kafka:
+        binder:
+          brokers:
+          - ${BOOTSTRAP_SERVER}
+      bindings:
+        orderConsumer-in-0:
+          destination: orders
+          group: notification-service
+        paymentConsumer-in-0:
+          destination: payments
+          group: notification-service
+  kafka:
+    consumer:
+      enable-auto-commit: true
+      auto-offset-reset: latest
+      key-deserializer:
+        org.apache.kafka.common.serialization.IntegerDeserializer
+      value-deserializer:
+        org.apache.kafka.common.serialization.ByteArrayDeserializer
+  
+    
 server:
   port: ${PORT:8093}

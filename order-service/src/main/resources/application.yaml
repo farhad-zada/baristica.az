@@ -33,7 +33,7 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      auto-offset-reset:  earliest
+      auto-offset-reset:  latest
       enable-auto-commit: true
       key-deserializer:
         org.apache.kafka.common.serialization.IntegerDeserializer

@@ -8,7 +8,6 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.shop.common.event.OrderEvent;
-import com.shop.common.event.OrderStatus;
 import com.shop.order.model.Order;
 import com.shop.order.util.OrderMapper;
 
@@ -58,14 +57,6 @@ public class OrderEventService {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onCommitEvent(OrderEvent event) {
-        event.setStatus(OrderStatus.COMPLETED);
         this.publish(event);
     }
-
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
-    public void onRollbackEvent(OrderEvent event) {
-       event.setStatus(OrderStatus.CANCELLED);
-       this.publish(event);
-    }
-
 }
