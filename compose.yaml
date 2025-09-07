@@ -3,7 +3,7 @@ services:
   order-service:
     build:
       context: .
-      dockerfile: docker/order-service/Dockerfile
+      dockerfile: .docker/order-service/Dockerfile
     container_name: order-service
     depends_on:
       order-db:
@@ -37,7 +37,7 @@ services:
   payment-service:
     build:
       context: .
-      dockerfile: docker/payment-service/Dockerfile
+      dockerfile: .docker/payment-service/Dockerfile
     container_name: payment-service
     depends_on: 
       payment-db:
@@ -70,7 +70,7 @@ services:
   notification-service:
     build:
       context: .
-      dockerfile: docker/notification-service/Dockerfile
+      dockerfile: .docker/notification-service/Dockerfile
     container_name: notification-service
     environment:
       - SPRING_PROFILES_ACTIVE=${NOTIFICATIONS_SPRING_PROFILES_ACTIVE}
